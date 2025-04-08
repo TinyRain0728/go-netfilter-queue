@@ -82,6 +82,18 @@ func (p *NFPacket) SetVerdictWithPacket(v Verdict, packet []byte) {
 	)
 }
 
+// Set the verdict for the packet AND provide new packet content for injection AND a mark
+func (p *NFPacket) SetVerdictWithPacketAndMark(v Verdict, packet []byte, mark uint32) {
+	C.nfq_set_verdict2(
+		p.qh,
+		p.id,
+		C.uint(v),
+		C.uint32_t(mark),
+		C.uint(len(packet)),
+		(*C.uchar)(unsafe.Pointer(&packet[0])),
+	)
+}
+
 type NFQueue struct {
 	h       *C.struct_nfq_handle
 	qh      *C.struct_nfq_q_handle
